@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'debug_toolbar',
 
     # User apps
+    'core',
     'auth_guard',
     'accounts'
 ]
@@ -157,3 +158,16 @@ SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
 }
+
+# Celery settings
+CELERY_BROKER_URL = env.str('CELERY_BROKER_URL')
+CELERY_RESULT_BACKEND = env.str('CELERY_RESULT_BACKEND')
+
+RESET_PASSWORD_URL = env.str('RESET_PASSWORD_URL')
+RESET_PASSWORD_URL_EXPIRY = env.int('RESET_PASSWORD_URL_EXPIRY')
+
+EMAIL_HOST = env.str('EMAIL_HOST')
+EMAIL_PORT = env.int('EMAIL_PORT')
+EMAIL_HOST_USER = env.str('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = env.str('EMAIL_HOST_PASSWORD')
+EMAIL_FROM = env.str('EMAIL_FROM')

@@ -1,14 +1,15 @@
-from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
+from django.db import models
 
 from accounts.managers import UserManager
+from core.models import BaseModel
 
 
 class UserTypeChoice(models.IntegerChoices):
     COMPANY_USER = 1, 'CompanyUser'
 
 
-class Company(models.Model):
+class Company(BaseModel):
     """
     Database model for entity `Company`
     """
@@ -23,7 +24,7 @@ class Company(models.Model):
         return self.name
 
 
-class User(AbstractBaseUser, PermissionsMixin):
+class User(AbstractBaseUser, PermissionsMixin, BaseModel):
     """
     Custom database model for entity `User` which extends
     Django's inbuilt `AbstractBaseUser`
@@ -72,3 +73,13 @@ class CompanyUser(models.Model):
 
     def __str__(self):
         return f'{self.company.name} <> {self.user}'
+
+
+class PasswordResetCode(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    code = models.CharField(max_length=32)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table = 'password_reset_code'
+        default_permissions = ()
