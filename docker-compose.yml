@@ -1,0 +1,46 @@
+version: "3.7"
+services:
+  app:
+    build:
+      context: .
+      dockerfile: ./src/Dockerfile
+    container_name: passage-app
+    image: passage-app-django
+    volumes:
+      - passage-app-static:/passage-app/static
+      - passage-app-media:/passage-app/media
+    command: bash -c "python manage.py collectstatic --no-input && python manage.py migrate && gunicorn --workers=3 passage.wsgi -b 0.0.0.0:8000"
+
+  nginx:
+    restart: always
+    container_name: passage-nginx
+    image: passage-nginx
+    build: ./nginx/
+    volumes:
+      - ./nginx/:/etc/nginx/conf.d
+      - ./logs/:/passage-app/logs
+      - passage-app-static:/passage-app/static
+      - passage-app-media:/passage-app/media
+    ports:
+      - "3001:80"
+    links:
+      - app
+
+  redis:
+    container_name: passage-redis
+    restart: always
+    image: redis:latest
+    expose:
+      - "6378"
+
+  celery:
+    image: passage-app-django
+    container_name: passage-celery
+    command: bash -c "celery -A passage worker -l info"
+    depends_on:
+      - redis
+      - app
+
+volumes:
+  passage-app-static:
+  passage-app-media:

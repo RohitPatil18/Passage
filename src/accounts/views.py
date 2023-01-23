@@ -4,9 +4,10 @@ from rest_framework.exceptions import ValidationError
 from accounts import serializers
 from accounts.models import User
 from accounts.services import reset_user_password
-from accounts.tasks import send_password_reset_link
 from core.mixins import PublicAPIMixin
 from core.views import PostServiceAPIView
+from notifications.events import USER_PASSWORD_RESET_LINK
+from notifications.tasks import notify_user
 
 
 class UserRegistrationAPIView(PublicAPIMixin, generics.CreateAPIView):
@@ -57,10 +58,15 @@ class ForgotPasswordInitiateAPIView(PublicAPIMixin, PostServiceAPIView):
                 code='invalid_email_address',
                 detail='User with given email address not found.'
             )
-        send_password_reset_link.delay({
-            'user_id': user.id,
-            'email_address': user.email_address
-        })
+
+        notify_user(
+            USER_PASSWORD_RESET_LINK,
+            recepients=user,
+            context={
+                'user_id': user.id,
+                'email_address': user.email_address
+            },
+        )
         return user
 
 

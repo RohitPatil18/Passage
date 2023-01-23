@@ -1,5 +1,5 @@
+import os
 from datetime import timedelta
-from os import path as osp
 from pathlib import Path
 
 import environ
@@ -12,7 +12,7 @@ env = environ.Env(
 )
 
 # reading .env file
-environ.Env.read_env(osp.join(BASE_DIR.parent, ".env"), )
+environ.Env.read_env(os.path.join(BASE_DIR.parent, ".env"), )
 
 DEBUG = env('DEBUG')
 
@@ -38,6 +38,9 @@ INSTALLED_APPS = [
     'debug_toolbar',
 
     # User apps
+    'softdelete',
+    'notifications',
+
     'core',
     'auth_guard',
     'accounts'
@@ -121,10 +124,29 @@ USE_I18N = True
 USE_TZ = True
 
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/4.1/howto/static-files/
+STATIC_URL = "/static/"
+STATIC_ROOT = os.path.join(BASE_DIR, "static")
 
-STATIC_URL = 'static/'
+USE_S3 = env.bool("USE_S3")
+
+if USE_S3:
+    AWS_ACCESS_KEY_ID = env.str("AWS_ACCESS_KEY_ID")
+    AWS_SECRET_ACCESS_KEY = env.str("AWS_SECRET_ACCESS_KEY")
+    AWS_STORAGE_BUCKET_NAME = env.str("AWS_STORAGE_BUCKET_NAME")
+    AWS_DEFAULT_ACL = 'public-read'
+    AWS_S3_CUSTOM_DOMAIN = '{0}.s3.amazonaws.com'.format(
+        AWS_STORAGE_BUCKET_NAME)
+
+    AWS_S3_OBJECT_PARAMETERS = {
+        'CacheControl': 'max-age=86400',
+    }
+    PUBLIC_MEDIA_LOCATION = 'media'
+    MEDIA_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/{PUBLIC_MEDIA_LOCATION}/'
+    DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+else:
+    MEDIA_ROOT = os.path.join(BASE_DIR, "media").replace("\\", "/")
+    MEDIA_URL = "/media/"
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
@@ -162,9 +184,15 @@ SIMPLE_JWT = {
 # Celery settings
 CELERY_BROKER_URL = env.str('CELERY_BROKER_URL')
 CELERY_RESULT_BACKEND = env.str('CELERY_RESULT_BACKEND')
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TIMEZONE = 'Asia/Kolkata'
 
 RESET_PASSWORD_URL = env.str('RESET_PASSWORD_URL')
 RESET_PASSWORD_URL_EXPIRY = env.int('RESET_PASSWORD_URL_EXPIRY')
+
+NOTIFICATION_ASYNC = env.bool('NOTIFICATION_ASYNC')
 
 EMAIL_HOST = env.str('EMAIL_HOST')
 EMAIL_PORT = env.int('EMAIL_PORT')

@@ -1,4 +1,5 @@
 from django.db import models
+from softdelete.models import SoftDeleteModel
 
 
 class TimestampModel(models.Model):
@@ -12,7 +13,7 @@ class TimestampModel(models.Model):
         abstract = True
 
 
-class BaseModel(TimestampModel):
+class BaseModel(TimestampModel, SoftDeleteModel):
     """
     Accumulation of multiple models which are common across project
     """
