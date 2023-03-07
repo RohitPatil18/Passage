@@ -111,6 +111,8 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+AUTHENTICATION_BACKENDS = ('authmod.backends.RoleBasedModelBackend', )
+
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.1/topics/i18n/

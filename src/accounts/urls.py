@@ -3,6 +3,10 @@ from django.urls import path
 
 urlpatterns = [
     path(
+        'test-perms',
+        views.test_perm,
+    ),
+    path(
         'register',
         views.UserRegistrationAPIView.as_view(),
         name='user-register-api'

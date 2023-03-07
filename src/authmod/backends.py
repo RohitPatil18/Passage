@@ -13,8 +13,7 @@ class RoleBasedModelBackend(ModelBackend):
     def _get_role_permissions(self, user_obj):
         user_groups_field = get_user_model()._meta.get_field("role")
         user_groups_query = "role__%s" % user_groups_field.related_query_name()
-        # return Permission.objects.filter(**{user_groups_query: user_obj})
-        return set()
+        return Permission.objects.filter(**{user_groups_query: user_obj})
 
     def get_role_permissions(self, user_obj, obj=None):
         """

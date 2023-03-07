@@ -26,7 +26,7 @@ def create_test_user():
         "user_type": models.UserTypeChoice.COMPANY_USER,
         "role_id": RoleChoice.COMPANY_ADMIN,
         "company": company,
-        "password": "R@ndrom#321",
+        "password": faker.password(),
     }
     return models.User.objects.create(**data)
 
@@ -77,8 +77,7 @@ class UserPasswordResetAPITests(APITestCase):
         """
         user = create_test_user()
         codeobj = models.PasswordResetCode.objects.create(
-            user = user,
-            code = "somerandomtokenindatabase"
+            user=user, code="somerandomtokenindatabase"
         )
 
         url = reverse("user-forgot-password-code-verify-api")
@@ -89,7 +88,6 @@ class UserPasswordResetAPITests(APITestCase):
         )
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-
 
     def test_forgot_password_verify_400(self):
         """
@@ -105,15 +103,13 @@ class UserPasswordResetAPITests(APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
-
     def test_forgot_password_reset_success(self):
         """
         Reset password success use case
         """
         user = create_test_user()
         codeobj = models.PasswordResetCode.objects.create(
-            user = user,
-            code = "passwordresetsuccesscode"
+            user=user, code="passwordresetsuccesscode"
         )
 
         url = reverse("user-forgot-password-reset-api")
@@ -121,19 +117,20 @@ class UserPasswordResetAPITests(APITestCase):
         payload = {
             "code": codeobj.code,
             "password": "notSoRandomPass@11",
-            "confirm_password": "notSoRandomPass@11"
+            "confirm_password": "notSoRandomPass@11",
         }
 
         response = self.client.post(url, payload)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        
+
         codeobj = models.PasswordResetCode.objects.filter(id=codeobj.id)
-        self.assertFalse(codeobj.exists()) # Checks if code is deleted from DB
+        self.assertFalse(codeobj.exists())  # Checks if code is deleted from DB
 
         user.refresh_from_db()
-        self.assertTrue(user.check_password(payload["password"])) # checks password change
-
+        self.assertTrue(
+            user.check_password(payload["password"])
+        )  # checks password change
 
     def test_forgot_password_reset_failure(self):
         """
@@ -141,17 +138,20 @@ class UserPasswordResetAPITests(APITestCase):
         """
         user = create_test_user()
         codeobj1 = models.PasswordResetCode.objects.create(
-            user = user,
-            code = "expiredpasswordcode",
-            created_at = timezone.now() - timedelta(minutes=settings.RESET_PASSWORD_URL_EXPIRY)
+            user=user,
+            code="expiredpasswordcode",
         )
+        codeobj1.created_at = timezone.now() - timedelta(
+            minutes=settings.RESET_PASSWORD_URL_EXPIRY
+        )
+        codeobj1.save()
 
         url = reverse("user-forgot-password-reset-api")
 
         payload = {
             "code": codeobj1.code,
             "password": "notSoRandomPass@11",
-            "confirm_password": "notSoRandomPass@11"
+            "confirm_password": "notSoRandomPass@11",
         }
 
         response = self.client.post(url, payload)

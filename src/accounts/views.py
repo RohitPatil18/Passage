@@ -1,3 +1,4 @@
+from django.http import HttpResponse
 from rest_framework import generics
 from rest_framework.exceptions import ValidationError
 
@@ -83,3 +84,11 @@ class ForgotPasswordResetAPIView(PublicAPIMixin, PostServiceAPIView):
             request, resetcode.user, serializer.validated_data["password"]
         )
         resetcode.delete()
+
+
+def test_perm(request):
+    from accounts.models import User
+    user = User.objects.get(id=6)
+
+    print(user.has_perm("authmod.add_role"))
+    return HttpResponse("Success!")
