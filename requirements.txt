@@ -3,9 +3,10 @@ djangorestframework==3.14.0
 python-environ==0.4.54
 drf-spectacular==0.24.2
 djangorestframework-simplejwt==5.2.2
+faker==17.6.0
 pyjwt==2.6.0
+psycopg2-binary==2.9.5
 cryptography==38.0.4
-psycopg2==2.9.5
 django-debug-toolbar==3.8.1
 celery==5.2.7
 eventlet==0.33.2

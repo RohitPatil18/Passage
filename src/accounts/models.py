@@ -1,13 +1,14 @@
-from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
+from django.contrib.auth.models import AbstractBaseUser
 from django.db import models
 
 from accounts.managers import UserManager
+from authmod.models import RolePermissionsMixin
 from core.models import BaseModel
 
 
 class UserTypeChoice(models.IntegerChoices):
     COMPANY_USER = 1, 'CompanyUser'
-
+    VENDOR_USER = 2, 'VendorUser'
 
 class Company(BaseModel):
     """
@@ -24,12 +25,12 @@ class Company(BaseModel):
         return self.name
 
 
-class User(AbstractBaseUser, PermissionsMixin, BaseModel):
+class User(AbstractBaseUser, RolePermissionsMixin, BaseModel):
     """
     Custom database model for entity `User` which extends
     Django's inbuilt `AbstractBaseUser`
     """
-
+    company = models.ForeignKey(Company, on_delete=models.CASCADE)
     first_name = models.CharField(max_length=256)
     last_name = models.CharField(max_length=256)
     email_address = models.EmailField(
@@ -56,23 +57,6 @@ class User(AbstractBaseUser, PermissionsMixin, BaseModel):
 
     def __str__(self):
         return f'{self.first_name} {self.last_name}'
-
-
-class CompanyUser(models.Model):
-    """
-    Database model for entity `CompanyUser`.
-    This entity stores the mapping between company and user
-    """
-
-    company = models.ForeignKey(Company, on_delete=models.CASCADE)
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-
-    class Meta:
-        db_table = 'company_users'
-        default_permissions = ()
-
-    def __str__(self):
-        return f'{self.company.name} <> {self.user}'
 
 
 class PasswordResetCode(models.Model):

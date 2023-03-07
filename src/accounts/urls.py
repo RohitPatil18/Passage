@@ -8,11 +8,6 @@ urlpatterns = [
         name='user-register-api'
     ),
     path(
-        'companies',
-        views.UserCompanyInfoAPIView.as_view(),
-        name='user-company-info-complete-api'
-    ),
-    path(
         'password/forgot/initiate',
         views.ForgotPasswordInitiateAPIView.as_view(),
         name='user-forgot-password-initiate-api'

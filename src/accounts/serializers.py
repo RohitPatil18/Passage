@@ -1,12 +1,12 @@
 from datetime import timedelta
 
 from django.conf import settings
+from django.db import transaction
 from django.utils import timezone
 from rest_framework import serializers
 
-from accounts import services
-from accounts.models import (Company, CompanyUser, PasswordResetCode, User,
-                             UserTypeChoice)
+from accounts.models import Company, PasswordResetCode, User, UserTypeChoice
+from authmod.models import RoleChoice
 
 
 class ConfirmPasswordInMixin(serializers.Serializer):
@@ -14,10 +14,10 @@ class ConfirmPasswordInMixin(serializers.Serializer):
 
     def validate(self, attrs):
         validated_data = super().validate(attrs)
-        if validated_data.get('password') != validated_data.get('confirm_password'):
-            raise serializers.ValidationError({
-                'password': 'Password and Confirm Password do not match.'
-            })
+        if validated_data.get("password") != validated_data.get("confirm_password"):
+            raise serializers.ValidationError(
+                {"password": "Password and Confirm Password do not match."}
+            )
         validated_data.pop("confirm_password")
         return validated_data
 
@@ -26,18 +26,22 @@ class UserCreateSerializer(ConfirmPasswordInMixin, serializers.ModelSerializer):
     """
     Serializer for `User Registration` API
     """
+
+    company_name = serializers.CharField(source="company.name")
+
     class Meta:
         model = User
         fields = (
-            'first_name',
-            'last_name',
-            'email_address',
-            'user_type',
-            'password',
-            'confirm_password'
+            "first_name",
+            "last_name",
+            "email_address",
+            "company_name",
+            "user_type",
+            "password",
+            "confirm_password",
         )
         extra_kwargs = {
-            'password': {'write_only': True},
+            "password": {"write_only": True},
         }
 
     def validate_user_type(self, value):
@@ -45,43 +49,17 @@ class UserCreateSerializer(ConfirmPasswordInMixin, serializers.ModelSerializer):
         Only company users are allowed to register from this API
         """
         if value != UserTypeChoice.COMPANY_USER:
-            raise serializers.ValidationError(
-                'Invalid user type.'
-            )
+            raise serializers.ValidationError("Invalid user type.")
         return value
 
-
-class CompanyUserSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Company
-        fields = (
-            'name',
-        )
-
-    def validate(self, validated_data):
-        user = self.context['request'].user
-        if user.user_type != UserTypeChoice.COMPANY_USER:
-            raise serializers.ValidationError(
-                {
-                    'error': 'Invalid user type.'
-                }
-            )
-        if CompanyUser.objects.filter(user=user).exists():
-            raise serializers.ValidationError(
-                {
-                    'error': 'Company information is already added for user.'
-                }
-            )
-        return validated_data
-
+    @transaction.atomic
     def create(self, validated_data):
-        """
-        DRF's default function is overridden and control is passed to service
-        layer for further processing of data
-        """
-        return services.add_user_company_information(
-            self.context['request'].user,
-            validated_data
+        company_data = validated_data.pop("company")
+        company = Company.objects.create(name=company_data["name"])
+        return User.objects.create(
+            company=company,
+            role_id=RoleChoice.COMPANY_ADMIN,
+            **validated_data,
         )
 
 
@@ -94,8 +72,8 @@ class PasswordResetInSerializer(ConfirmPasswordInMixin, serializers.Serializer):
     password = serializers.CharField()
 
     def validate_current_password(self, value):
-        if not self.context['request'].user.check_password(value):
-            raise serializers.ValidationError('Incorrect current password.')
+        if not self.context["request"].user.check_password(value):
+            raise serializers.ValidationError("Incorrect current password.")
         return value
 
 
@@ -108,16 +86,14 @@ class ResetCodeInSerializer(serializers.Serializer):
         # Validate Reset token and add
         limit = timezone.now() - timedelta(minutes=settings.RESET_PASSWORD_URL_EXPIRY)
 
-        resetcode = PasswordResetCode.objects \
-            .filter(code=validated_data['code'], created_at__gt=limit)\
-            .first()
+        resetcode = PasswordResetCode.objects.filter(
+            code=validated_data["code"], created_at__gt=limit
+        ).first()
 
         if not resetcode:
-            raise serializers.ValidationError(
-                'Password reset link is expired.'
-            )
+            raise serializers.ValidationError("Password reset link is expired.")
 
-        validated_data['resetcode'] = resetcode
+        validated_data["resetcode"] = resetcode
         return validated_data
 
 

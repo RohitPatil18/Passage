@@ -1,6 +1,6 @@
 from rest_framework_simplejwt.views import TokenObtainPairView
 
-from auth_guard.serializers import AuthLoginSerializer
+from authmod.serializers import AuthLoginSerializer
 
 
 class AuthLoginView(TokenObtainPairView):

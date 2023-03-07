@@ -1,5 +1,5 @@
 from django.contrib.auth.models import BaseUserManager
-
+from authmod.models import RoleChoice
 
 class UserManager(BaseUserManager):
 
@@ -28,9 +28,18 @@ class UserManager(BaseUserManager):
         """
         Creates and saves a superuser with the given email and password.
         """
+        from accounts.models import Company
+
+        company, _ = Company.objects.get_or_create(
+            id = 1,
+            defaults={"name": "SuperUserCompany"}
+        )
+
         user = self.create_user(
             email_address=email_address,
             password=password,
+            company=company,
+            role_id=RoleChoice.COMPANY_ADMIN
         )
         user.is_superuser = True
         user.save(using=self._db)

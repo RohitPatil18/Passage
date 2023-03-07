@@ -42,7 +42,7 @@ INSTALLED_APPS = [
     'notifications',
 
     'core',
-    'auth_guard',
+    'authmod',
     'accounts'
 ]
 

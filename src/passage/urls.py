@@ -10,7 +10,7 @@ apiv2patterns = [
     path('docs/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
     path('redocs/', SpectacularRedocView.as_view(url_name='schema'), name='redoc'),
 
-    path('auth/', include('auth_guard.urls')),
+    path('auth/', include('authmod.urls')),
     path('users/', include('accounts.urls')),
 ]
 
