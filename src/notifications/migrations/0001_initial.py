@@ -5,43 +5,60 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='NotificationLog',
+            name="NotificationLog",
             fields=[
-                ('id', models.BigAutoField(auto_created=True,
-                 primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=200)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=200)),
             ],
             options={
-                'db_table': 'sys_notification_logs',
+                "db_table": "sys_notification_logs",
             },
         ),
         migrations.CreateModel(
-            name='EmailLog',
+            name="EmailLog",
             fields=[
-                ('id', models.BigAutoField(auto_created=True,
-                 primary_key=True, serialize=False, verbose_name='ID')),
-                ('subject', models.TextField()),
-                ('body', models.TextField()),
-                ('recepients', models.JSONField()),
-                ('cc', models.JSONField(null=True)),
-                ('bcc', models.JSONField(null=True)),
-                ('is_sent', models.BooleanField(default=False)),
-                ('sent_at', models.DateTimeField(null=True)),
-                ('failure_reason', models.TextField(null=True)),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('notification', models.ForeignKey(
-                    on_delete=django.db.models.deletion.CASCADE, to='notifications.notificationlog')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("subject", models.TextField()),
+                ("body", models.TextField()),
+                ("recepients", models.JSONField()),
+                ("cc", models.JSONField(null=True)),
+                ("bcc", models.JSONField(null=True)),
+                ("is_sent", models.BooleanField(default=False)),
+                ("sent_at", models.DateTimeField(null=True)),
+                ("failure_reason", models.TextField(null=True)),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                (
+                    "notification",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="notifications.notificationlog",
+                    ),
+                ),
             ],
             options={
-                'db_table': 'sys_email_logs',
+                "db_table": "sys_email_logs",
             },
         ),
     ]

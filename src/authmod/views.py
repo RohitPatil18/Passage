@@ -9,4 +9,5 @@ class AuthLoginView(TokenObtainPairView):
     This view uses custom serializer which adds additional information to return
     once user is successfully authenticated.
     """
+
     serializer_class = AuthLoginSerializer

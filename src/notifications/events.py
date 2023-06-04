@@ -3,8 +3,8 @@ USER_PASSWORD_RESET_LINK = {
     "script": "notifications.scripts.forgot_password.PasswordResetLinkNotification",
     "email": {
         "status": True,
-        "script": "notifications.scripts.forgot_password.PasswordResetLinkMail"
+        "script": "notifications.scripts.forgot_password.PasswordResetLinkMail",
     },
     "sms": {"status": False},
-    "app_notification": {"status": False}
+    "app_notification": {"status": False},
 }

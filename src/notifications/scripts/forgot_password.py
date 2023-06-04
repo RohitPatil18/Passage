@@ -1,4 +1,3 @@
-
 from uuid import uuid4
 
 from django.conf import settings
@@ -8,13 +7,13 @@ from notifications.base import BaseMail, BaseNotification
 
 
 class PasswordResetLinkNotification(BaseNotification):
-
     def get_context(self, context):
         resetcode = PasswordResetCode.objects.create(
-            code=uuid4().hex,
-            user_id=context['user_id']
+            code=uuid4().hex, user_id=context["user_id"]
         )
-        context['password_reset_link'] = f'{settings.RESET_PASSWORD_URL}?code={resetcode.code}'
+        context[
+            "password_reset_link"
+        ] = f"{settings.RESET_PASSWORD_URL}?code={resetcode.code}"
         return context
 
 

@@ -1,4 +1,3 @@
-
 def reset_user_password(request, user, password):
     user.set_password(password)
     user.save()

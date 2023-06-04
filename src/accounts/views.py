@@ -88,6 +88,7 @@ class ForgotPasswordResetAPIView(PublicAPIMixin, PostServiceAPIView):
 
 def test_perm(request):
     from accounts.models import User
+
     user = User.objects.get(id=6)
 
     print(user.has_perm("authmod.add_role"))

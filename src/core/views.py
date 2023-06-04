@@ -4,14 +4,10 @@ from rest_framework.response import Response
 
 class PostServiceAPIView(generics.GenericAPIView):
     response_status = status.HTTP_200_OK
-    response_message = 'Action was successfully performed.'
+    response_message = "Action was successfully performed."
 
     def get_response_payload(self, results):
-        return {
-            'success': True,
-            'message': self.response_message,
-            'data': {}
-        }
+        return {"success": True, "message": self.response_message, "data": {}}
 
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)

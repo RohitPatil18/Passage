@@ -85,7 +85,7 @@ class RoleBasedAccessTestCase(TestCase):
         """
         user = create_test_user()
         perm = create_test_permission()
-        
+
         user.user_permissions.add(perm)
 
         userperms = user.get_user_permissions()
@@ -115,7 +115,6 @@ class RoleBasedAccessTestCase(TestCase):
         perm_str = self.get_perm_str(perm)
         self.assertSetEqual(roleperms, {perm_str})
 
-
     def test_get_all_permissions(self):
         """
         Test if get all permissions is correctly working
@@ -135,7 +134,7 @@ class RoleBasedAccessTestCase(TestCase):
         allperms = user.get_all_permissions()
 
         self.assertEquals(len(allperms), 2)
-        
+
         perm_str1 = self.get_perm_str(perm1)
         perm_str2 = self.get_perm_str(perm2)
 

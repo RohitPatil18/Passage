@@ -102,11 +102,9 @@ class SoftDeleteHelper:
                 self.send_signal(model, instances, "pre_save")
             try:
                 if self.delete_type == "soft_delete":
-                    self.sql_model_wise_batch_update(
-                        model, instances, is_active=False)
+                    self.sql_model_wise_batch_update(model, instances, is_active=False)
                 else:
-                    self.sql_model_wise_batch_update(
-                        model, instances, is_active=True)
+                    self.sql_model_wise_batch_update(model, instances, is_active=True)
                 deleted_counter[model._meta.model_name] += len(instances)
             except FieldDoesNotExist:
                 # hard-delete instnaces of those model that are not made to

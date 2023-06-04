@@ -7,7 +7,7 @@ ENV PYTHONUNBUFFERED 1
 RUN mkdir /passage-app/
 WORKDIR /passage-app/
 COPY ./src/ /passage-app/
-COPY ./requirements.txt /passage-app/requirements.txt 
+COPY ./requirements/base.txt /passage-app/base-req.txt 
 COPY ./.env .env
 
 
@@ -20,4 +20,4 @@ RUN set -ex \
     && apt-get update && apt-get install -y --no-install-recommends $BUILD_DEPS \
     && apt-get install -y --no-install-recommends default-libmysqlclient-dev \
     && pip install -U pip \
-    && pip install --no-cache-dir -r /passage-app/requirements.txt 
+    && pip install --no-cache-dir -r /passage-app/base-req.txt 

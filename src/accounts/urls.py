@@ -1,34 +1,31 @@
-from accounts import views
 from django.urls import path
+
+from accounts import views
 
 urlpatterns = [
     path(
-        'test-perms',
+        "test-perms",
         views.test_perm,
     ),
+    path("register", views.UserRegistrationAPIView.as_view(), name="user-register-api"),
     path(
-        'register',
-        views.UserRegistrationAPIView.as_view(),
-        name='user-register-api'
-    ),
-    path(
-        'password/forgot/initiate',
+        "password/forgot/initiate",
         views.ForgotPasswordInitiateAPIView.as_view(),
-        name='user-forgot-password-initiate-api'
+        name="user-forgot-password-initiate-api",
     ),
     path(
-        'password/forgot/verify',
+        "password/forgot/verify",
         views.ForgotPasswordCodeVerifyAPIView.as_view(),
-        name='user-forgot-password-code-verify-api'
+        name="user-forgot-password-code-verify-api",
     ),
     path(
-        'password/forgot/reset',
+        "password/forgot/reset",
         views.ForgotPasswordResetAPIView.as_view(),
-        name='user-forgot-password-reset-api'
+        name="user-forgot-password-reset-api",
     ),
     path(
-        'password/reset',
+        "password/reset",
         views.PasswordResetAPIView.as_view(),
-        name='user-password-reset-api'
+        name="user-password-reset-api",
     ),
 ]

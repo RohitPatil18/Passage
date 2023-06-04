@@ -4,15 +4,14 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('accounts', '0002_company_created_at_company_updated_at_and_more'),
+        ("accounts", "0002_company_created_at_company_updated_at_and_more"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='company',
-            name='is_active',
+            model_name="company",
+            name="is_active",
             field=models.BooleanField(default=True),
         ),
     ]
