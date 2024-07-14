@@ -85,11 +85,3 @@ class ForgotPasswordResetAPIView(PublicAPIMixin, PostServiceAPIView):
         )
         resetcode.delete()
 
-
-def test_perm(request):
-    from accounts.models import User
-
-    user = User.objects.get(id=6)
-
-    print(user.has_perm("authmod.add_role"))
-    return HttpResponse("Success!")

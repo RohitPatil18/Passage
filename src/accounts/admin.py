@@ -25,7 +25,6 @@ class UserCreationForm(forms.ModelForm):
             "last_name",
             "email_address",
             "user_type",
-            "company",
             "user_permissions",
             "role",
         )
@@ -62,7 +61,6 @@ class UserChangeForm(forms.ModelForm):
             "last_name",
             "email_address",
             "user_type",
-            "company",
             "user_permissions",
             "role",
         )
@@ -74,11 +72,11 @@ class UserAdmin(BaseUserAdmin):
     add_form = UserCreationForm
 
     list_display = ("first_name", "last_name", "email_address", "role")
-    list_filter = ("user_type", "role", "company")
+    list_filter = ("user_type", "role", )
     fieldsets = (
         (None, {"fields": ("email_address", "password")}),
         ("Personal info", {"fields": ("first_name", "last_name")}),
-        ("Additional", {"fields": ("company", "role")}),
+        ("Additional", {"fields": ("role", )}),
     )
 
     # add_fieldsets is not a standard ModelAdmin attribute. UserAdmin
@@ -86,7 +84,7 @@ class UserAdmin(BaseUserAdmin):
     add_fieldsets = (
         (None, {"fields": ("email_address", "password1", "password2")}),
         ("Personal info", {"fields": ("first_name", "last_name")}),
-        ("Additional", {"fields": ("company", "role")}),
+        ("Additional", {"fields": ("role", )}),
     )
     search_fields = ("email_address", "first_name", "last_name")
     ordering = ("created_at",)

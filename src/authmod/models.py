@@ -7,8 +7,8 @@ from django.utils.translation import gettext_lazy as _
 
 
 class RoleChoice(models.IntegerChoices):
-    COMPANY_ADMIN = 1, "Company Admin"
-    COMPANY_USER = 2, "Company User"
+    ADMIN = 1, "Admin"
+    USER = 2, "User"
     VENDOR_ADMIN = 3, "Vendor Admin"
     VENDOR_USER = 4, "Vendor User"
 

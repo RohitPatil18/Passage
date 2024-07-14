@@ -5,6 +5,5 @@ USER_PASSWORD_RESET_LINK = {
         "status": True,
         "script": "notifications.scripts.forgot_password.PasswordResetLinkMail",
     },
-    "sms": {"status": False},
-    "app_notification": {"status": False},
+    # TODO: Add SMS and 
 }

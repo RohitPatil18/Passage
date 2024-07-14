@@ -12,29 +12,12 @@ class UserTypeChoice(models.IntegerChoices):
     VENDOR_USER = 2, "VendorUser"
 
 
-class Company(BaseModel):
-    """
-    Database model for entity `Company`
-    """
-
-    name = models.CharField(max_length=256)
-
-    class Meta:
-        db_table = "company"
-        verbose_name_plural = "Companies"
-        default_permissions = ()
-
-    def __str__(self):
-        return self.name
-
-
 class User(AbstractBaseUser, RolePermissionsMixin, BaseModel):
     """
     Custom database model for entity `User` which extends
     Django's inbuilt `AbstractBaseUser`
     """
 
-    company = models.ForeignKey(Company, on_delete=models.CASCADE)
     first_name = models.CharField(max_length=256)
     last_name = models.CharField(max_length=256)
     email_address = models.EmailField(

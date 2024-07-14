@@ -14,6 +14,7 @@ environ.Env.read_env(
     os.path.join(BASE_DIR.parent, ".env"),
 )
 
+
 DEBUG = env("DEBUG")
 
 SECRET_KEY = env.str("SECRET_KEY")

@@ -5,9 +5,14 @@ from django.db import transaction
 from django.utils import timezone
 from rest_framework import serializers
 
-from accounts.models import Company, PasswordResetCode, User, UserTypeChoice
+from accounts.models import PasswordResetCode, User, UserTypeChoice
 from authmod.models import RoleChoice
 
+
+class UserInfoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ("id", "first_name", "last_name", "email_address", "user_type")
 
 class ConfirmPasswordInMixin(serializers.Serializer):
     confirm_password = serializers.CharField(write_only=True)
@@ -27,15 +32,12 @@ class UserCreateSerializer(ConfirmPasswordInMixin, serializers.ModelSerializer):
     Serializer for `User Registration` API
     """
 
-    company_name = serializers.CharField(source="company.name")
-
     class Meta:
         model = User
         fields = (
             "first_name",
             "last_name",
             "email_address",
-            "company_name",
             "user_type",
             "password",
             "confirm_password",
@@ -54,10 +56,7 @@ class UserCreateSerializer(ConfirmPasswordInMixin, serializers.ModelSerializer):
 
     @transaction.atomic
     def create(self, validated_data):
-        company_data = validated_data.pop("company")
-        company = Company.objects.create(name=company_data["name"])
         return User.objects.create(
-            company=company,
             role_id=RoleChoice.COMPANY_ADMIN,
             **validated_data,
         )

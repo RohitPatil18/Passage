@@ -18,17 +18,3 @@ def notify_user(event, recepients, context):
 def send_email_notification(notification, config, recepients, context):
     Mail = import_string(config["script"])
     Mail(notification, config, recepients, context).send_email()
-
-
-@shared_task
-def send_sms_notification(notification, config, recepients, context):
-    """
-    @TODO: Send SMS implemention
-    """
-
-
-@shared_task
-def send_in_app_notification(notification, config, recepients, context):
-    """
-    @TODO: Send App notification implemention
-    """
